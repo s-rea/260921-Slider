@@ -13,7 +13,7 @@
       id="gain"
       type="range"
       min="0"
-      max="1"
+      max="0.25"
       step="0.01"
       value="0.1"
     /><label id="gainDisplay">0.1</label>
@@ -21,18 +21,32 @@
       const ctx = new AudioContext();
       ctx.suspend();
 
-      const osc = new OscillatorNode(ctx);
+      const osc1 = new OscillatorNode(ctx);
+      let freq = 110;
+      osc1.frequency.value = freq;
+
+      const osc2 = new OscillatorNode(ctx);
+      osc2.frequency.value = freq * 1.01;
+      const osc3 = new OscillatorNode(ctx);
+      osc3.frequency.value = freq * 0.99;
+
       const gain = new GainNode(ctx);
       gain.gain.value = 0.01;
 
-      osc.connect(gain);
+      osc1.connect(gain);
+      osc2.connect(gain);
+      osc3.connect(gain);
       gain.connect(ctx.destination);
-      osc.start();
+      osc1.start();
+      osc2.start();
+      osc3.start();
 
       const slider = document.querySelector("#freq");
       slider.addEventListener("input", () => {
         ctx.resume();
-        osc.frequency.value = Number(slider.value);
+        osc1.frequency.value = Number(slider.value);
+        osc2.frequency.value = Number(slider.value);
+        osc3.frequency.value = Number(slider.value);
         document.querySelector("#freqDisplay").textContent = slider.value;
       });
 
